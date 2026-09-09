@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>{% block title %}Market{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app">
+  {% block header %}{% endblock %}
+  <main class="content">{% block content %}{% endblock %}</main>
+  {% block bottom %}{% endblock %}
+</div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Thai", "Noto Sans SC", sans-serif;
+  background: #f2f3f5; color: #1a1a1a; line-height: 1.4;
+}
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: #fff; position: relative; padding-bottom: 72px; }
+.content { padding: 12px; }
+
+/* topbar */
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 8px;
+  background: #fff; border-bottom: 1px solid #eee; padding: 12px; height: 52px; }
+.topbar-title { font-weight: 600; font-size: 17px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar-back { font-size: 26px; line-height: 1; text-decoration: none; color: #111; width: 28px; }
+.topbar-lang { text-decoration: none; color: #111; font-size: 15px; }
+
+/* flags */
+.flags-screen { padding: 48px 20px; }
+.flags-title { font-size: 20px; text-align: center; margin-bottom: 28px; font-weight: 600; }
+.flags-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.flag-card { display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 24px 8px; background: #fff; border: 1px solid #e6e6e6; border-radius: 16px; text-decoration: none; color: #111; }
+.flag-emoji { font-size: 44px; }
+.flag-name { font-size: 15px; font-weight: 500; }
+
+/* catalog grid */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card { background: #fff; border: 1px solid #ececec; border-radius: 12px; overflow: hidden; text-decoration: none; color: #111; }
+.card-img { aspect-ratio: 1/1; background: #f6f6f6; }
+.card-img img { width: 100%; height: 100%; object-fit: cover; }
+.noimg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 28px; }
+.noimg.big { aspect-ratio: 1/1; }
+.card-body { padding: 8px 10px 10px; }
+.card-name { font-size: 14px; font-weight: 500; min-height: 34px; }
+.card-price { font-size: 15px; font-weight: 700; margin-top: 4px; }
+
+/* product page */
+.gallery { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; margin: -12px -12px 12px; padding: 12px; }
+.gallery img { width: 82%; flex: 0 0 auto; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; scroll-snap-align: center; }
+.p-name { font-size: 19px; margin-bottom: 6px; }
+.p-desc { color: #555; margin-bottom: 12px; }
+.tiers { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.tiers td { padding: 10px 12px; border: 1px solid #eee; }
+.tiers td:last-child { text-align: right; font-weight: 700; }
+.addform label { display: block; font-size: 14px; color: #666; margin-bottom: 6px; }
+.qty { width: 100%; padding: 12px; font-size: 17px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 12px; }
+.qty.small { width: 72px; margin: 0; padding: 8px; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 14px; border-radius: 10px; border: 1px solid #ddd; background: #fff; color: #111;
+  font-size: 15px; font-weight: 500; text-decoration: none; cursor: pointer; }
+.btn.primary { background: #111; color: #fff; border-color: #111; }
+.btn.big { width: 100%; padding: 15px; font-size: 17px; }
+.btn.tiny { padding: 6px 10px; font-size: 13px; }
+.btn.ghost { background: #f4f4f4; }
+
+/* cart bar */
+.cartbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: 12px; width: min(456px, calc(100% - 24px));
+  display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;
+  background: #111; color: #fff; border-radius: 14px; text-decoration: none; font-size: 16px; font-weight: 600; }
+.cartbar-count { background: #fff; color: #111; border-radius: 20px; padding: 2px 10px; }
+
+/* cart lines */
+.cartline { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; align-items: flex-start; }
+.cl-img { width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background: #f6f6f6; flex: 0 0 auto; }
+.cl-img img { width: 100%; height: 100%; object-fit: cover; }
+.cl-body { flex: 1; }
+.cl-name { font-weight: 500; }
+.cl-price { color: #666; font-size: 13px; margin: 2px 0 8px; }
+.cl-upd { display: flex; gap: 6px; align-items: center; }
+.cl-total { font-weight: 700; }
+.grand { text-align: right; font-size: 17px; margin: 16px 0; }
+.checkout label { display: block; font-size: 14px; color: #666; margin-bottom: 6px; }
+.contact { width: 100%; padding: 13px; font-size: 16px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 12px; }
+
+/* done */
+.done { text-align: center; padding: 60px 24px; }
+.done-check { width: 72px; height: 72px; margin: 0 auto 20px; border-radius: 50%; background: #16a34a; color: #fff;
+  font-size: 40px; display: flex; align-items: center; justify-content: center; }
+.done h1 { font-size: 22px; margin-bottom: 8px; }
+.done p { color: #666; margin-bottom: 24px; }
+
+/* login */
+.login { padding: 48px 20px; }
+.login h1 { font-size: 20px; margin-bottom: 20px; }
+.login input { width: 100%; padding: 13px; font-size: 16px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 12px; }
+.err { color: #dc2626; margin-bottom: 12px; }
+
+/* forms / panels */
+.sec { font-size: 15px; color: #666; margin: 22px 0 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.pform label { display: block; font-size: 14px; color: #555; margin: 12px 0 6px; }
+.pform input, .pform textarea { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 10px; }
+.pform button { margin-top: 18px; }
+.hint { color: #999; font-size: 13px; margin-top: 12px; }
+.empty { color: #999; text-align: center; padding: 32px 0; }
+
+.prow { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+.prow.off { opacity: .45; }
+.prow-name { font-weight: 600; flex: 1 0 100%; }
+.prow-price { color: #666; font-size: 14px; flex: 1; }
+.prow-actions { display: flex; gap: 6px; }
+
+.photos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.photo { position: relative; width: 80px; }
+.photo img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+.photo .badge { position: absolute; top: 2px; left: 2px; background: #111; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 6px; }
+.photo form { position: absolute; top: 2px; right: 2px; }
+.photo .btn { padding: 2px 6px; }
+
+.orow { display: block; padding: 14px; background: #fff; border: 1px solid #ececec; border-radius: 12px; margin-bottom: 10px; text-decoration: none; color: #111; }
+.orow-name { font-weight: 600; font-size: 16px; }
+.orow-meta { color: #666; font-size: 14px; margin-top: 4px; }
+
+.datatable { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 14px; }
+.datatable th, .datatable td { padding: 8px 10px; border: 1px solid #eee; text-align: left; }
+.datatable th { background: #fafafa; }
+.datatable td:last-child, .datatable th:last-child { text-align: right; }
+.totalrow td { font-weight: 700; background: #fafafa; }
+.sub { border: 1px solid #ececec; border-radius: 12px; padding: 10px; margin-bottom: 12px; }
+.sub-head { font-weight: 600; margin-bottom: 8px; }
+.tag { background: #eef; color: #446; font-size: 12px; padding: 1px 7px; border-radius: 6px; }
+.status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.status.open { background: #dcfce7; color: #166534; }
+.status.closed { background: #eee; color: #666; }
+
+/* order status */
+.sub-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ostatus { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+.ostatus.new { background: #fef9c3; color: #854d0e; }
+.ostatus.deliver { background: #dcfce7; color: #166534; }
+.ostatus.skip { background: #fee2e2; color: #991b1b; }
+.sub.st-skip { opacity: .55; }
+.order-actions { display: flex; gap: 6px; margin-top: 8px; }

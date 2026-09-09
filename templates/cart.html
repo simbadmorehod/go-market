@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block header %}
+<header class="topbar">
+  <a class="topbar-back" href="/catalog">‹</a>
+  <span class="topbar-title">{{ t('cart') }}</span>
+</header>
+{% endblock %}
+{% block content %}
+{% if not lines %}
+  <p class="empty">{{ t('empty_cart') }}</p>
+{% else %}
+{% for l in lines %}
+<div class="cartline">
+  <div class="cl-img">{% if l.main %}<img src="{{ l.main }}">{% else %}<div class="noimg">—</div>{% endif %}</div>
+  <div class="cl-body">
+    <div class="cl-name">{{ l.name }}</div>
+    <div class="cl-price">${{ '%.2f'|format(l.unit) }} / {{ t('unit') }} ({{ l.tier }})</div>
+    <form class="cl-upd" method="post" action="/cart/update">
+      <input type="hidden" name="product_id" value="{{ l.id }}">
+      <input class="qty small" type="number" name="qty" value="{{ l.qty }}" min="0" inputmode="numeric">
+      <button class="btn tiny" type="submit">{{ t('update') }}</button>
+    </form>
+  </div>
+  <div class="cl-total">${{ '%.2f'|format(l.line_total) }}</div>
+</div>
+{% endfor %}
+<div class="grand">{{ t('grand_total') }}: <b>${{ '%.2f'|format(total) }}</b></div>
+<form class="checkout" method="post" action="/checkout">
+  <label>{{ t('contact_label') }}</label>
+  <input class="contact" type="text" name="contact" placeholder="{{ t('contact_ph') }}" required>
+  <button class="btn primary big" type="submit">{{ t('checkout') }}</button>
+</form>
+{% endif %}
+{% endblock %}

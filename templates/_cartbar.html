@@ -1,0 +1,6 @@
+{% if cart_count > 0 %}
+<a class="cartbar" href="/cart">
+  <span>🛒 {{ t('cart') }}</span>
+  <span class="cartbar-count">{{ cart_count }}</span>
+</a>
+{% endif %}

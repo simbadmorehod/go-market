@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block header %}
+<header class="topbar">
+  <span class="topbar-title">{{ t('catalog') }}</span>
+  <a class="topbar-lang" href="/">🌐</a>
+</header>
+{% endblock %}
+{% block content %}
+{% if not items %}
+  <p class="empty">{{ t('no_products') }}</p>
+{% else %}
+<div class="grid">
+  {% for p in items %}
+  <a class="card" href="/product/{{ p.id }}">
+    <div class="card-img">
+      {% if p.main %}<img src="{{ p.main }}" alt="">{% else %}<div class="noimg">—</div>{% endif %}
+    </div>
+    <div class="card-body">
+      <div class="card-name">{{ p.name }}</div>
+      <div class="card-price">{{ t('price_from') }} ${{ '%.2f'|format(p.price_10) }}</div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+{% block bottom %}
+{% include "_cartbar.html" %}
+{% endblock %}

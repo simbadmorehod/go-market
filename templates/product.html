@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block header %}
+<header class="topbar">
+  <a class="topbar-back" href="/catalog">‹</a>
+  <span class="topbar-title">{{ p.name }}</span>
+</header>
+{% endblock %}
+{% block content %}
+<div class="gallery">
+  {% if p.photos %}
+    {% for ph in p.photos %}<img src="{{ ph }}" alt="">{% endfor %}
+  {% else %}<div class="noimg big">—</div>{% endif %}
+</div>
+<h1 class="p-name">{{ p.name }}</h1>
+{% if p.desc %}<p class="p-desc">{{ p.desc }}</p>{% endif %}
+<table class="tiers">
+  <tr><td>{{ t('tier_1') }}</td><td>${{ '%.2f'|format(p.price_1) }}</td></tr>
+  <tr><td>{{ t('tier_5') }}</td><td>${{ '%.2f'|format(p.price_5) }}</td></tr>
+  <tr><td>{{ t('tier_10') }}</td><td>${{ '%.2f'|format(p.price_10) }}</td></tr>
+</table>
+<form class="addform" method="post" action="/cart/add">
+  <input type="hidden" name="product_id" value="{{ p.id }}">
+  <label>{{ t('quantity') }}</label>
+  <input class="qty" type="number" name="qty" value="1" min="1" inputmode="numeric">
+  <button class="btn primary" type="submit">{{ t('add_to_cart') }}</button>
+</form>
+{% endblock %}
+{% block bottom %}{% include "_cartbar.html" %}{% endblock %}

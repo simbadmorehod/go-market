@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flags-screen">
+  <h1 class="flags-title">{{ t('choose_language') }}</h1>
+  <div class="flags-grid">
+    {% for code in langs %}
+    <a class="flag-card" href="/lang/{{ code }}">
+      <span class="flag-emoji">{{ flags[code] }}</span>
+      <span class="flag-name">{{ names[code] }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

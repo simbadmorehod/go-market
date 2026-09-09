@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block header %}
+<header class="topbar">
+  <span class="topbar-title">{{ acc.name }}</span>
+  <a class="topbar-lang" href="/partner/logout">Exit</a>
+</header>
+{% endblock %}
+{% block content %}
+<a class="btn primary big" href="/partner/product/new">+ Add product</a>
+
+<h2 class="sec">Orders</h2>
+{% if not orders %}<p class="empty">No orders yet</p>{% endif %}
+{% for o in orders %}
+<div class="sub st-{{ o.status }}">
+  <div class="sub-head">
+    <span>#{{ o.id }} · {{ o.contact }} <span class="tag">{{ o.lang }}</span></span>
+    <span class="ostatus {{ o.status }}">
+      {% if o.status == 'deliver' %}✓ deliver{% elif o.status == 'skip' %}✕ skip{% else %}new{% endif %}
+    </span>
+  </div>
+  <table class="datatable">
+    {% for l in o.lines %}
+    <tr><td>{{ l.name }}</td><td>{{ l.qty }} × ${{ '%.2f'|format(l.unit_price) }} ({{ l.tier }})</td><td>${{ '%.2f'|format(l.qty*l.unit_price) }}</td></tr>
+    {% endfor %}
+    <tr class="totalrow"><td colspan="2">Total</td><td>${{ '%.2f'|format(o.total) }}</td></tr>
+  </table>
+  <div class="order-actions">
+    <form method="post" action="/partner/order/{{ o.id }}/status">
+      <input type="hidden" name="status" value="deliver">
+      <button class="btn tiny {{ 'primary' if o.status != 'deliver' else 'ghost' }}" type="submit">Deliver</button>
+    </form>
+    <form method="post" action="/partner/order/{{ o.id }}/status">
+      <input type="hidden" name="status" value="skip">
+      <button class="btn tiny ghost" type="submit">Skip</button>
+    </form>
+    {% if o.status != 'new' %}
+    <form method="post" action="/partner/order/{{ o.id }}/status">
+      <input type="hidden" name="status" value="new">
+      <button class="btn tiny ghost" type="submit">Reset</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
+{% if totals %}
+<h2 class="sec">To deliver — combined</h2>
+<table class="datatable">
+  <tr><th>Product</th><th>Units</th><th>Amount</th></tr>
+  {% for r in totals %}
+  <tr><td>{{ r.name }}</td><td>{{ r.qty }}</td><td>${{ '%.2f'|format(r.total) }}</td></tr>
+  {% endfor %}
+  <tr class="totalrow"><td>TOTAL</td><td></td><td>${{ '%.2f'|format(deliver_total) }}</td></tr>
+</table>
+{% endif %}
+
+<h2 class="sec">My products</h2>
+{% if not products %}<p class="empty">No products yet</p>{% endif %}
+{% for p in products %}
+<div class="prow {{ '' if p.active else 'off' }}">
+  <div class="prow-name">{{ p.base_name }}</div>
+  <div class="prow-price">${{ '%.2f'|format(p.price_1) }} / ${{ '%.2f'|format(p.price_5) }} / ${{ '%.2f'|format(p.price_10) }}</div>
+  <div class="prow-actions">
+    <a class="btn tiny" href="/partner/product/{{ p.id }}/edit">Edit</a>
+    <form method="post" action="/partner/product/{{ p.id }}/toggle" style="display:inline">
+      <button class="btn tiny ghost" type="submit">{{ 'Hide' if p.active else 'Show' }}</button>
+    </form>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

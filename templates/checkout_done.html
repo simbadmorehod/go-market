@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="done">
+  <div class="done-check">✓</div>
+  <h1>{{ t('order_placed') }}</h1>
+  <p>{{ t('order_thanks') }}</p>
+  <a class="btn primary" href="/catalog">{{ t('back_to_catalog') }}</a>
+</div>
+{% endblock %}
