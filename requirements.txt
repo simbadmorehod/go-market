@@ -5,3 +5,5 @@ python-multipart
 itsdangerous
 httpx
 gunicorn
+pillow
+pillow-heif

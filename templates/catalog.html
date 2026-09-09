@@ -17,7 +17,7 @@
     </div>
     <div class="card-body">
       <div class="card-name">{{ p.name }}</div>
-      <div class="card-price">{{ t('price_from') }} ${{ '%.2f'|format(p.price_10) }}</div>
+      <div class="card-price">${{ '%.2f'|format(p.price_1) }}</div>
     </div>
   </a>
   {% endfor %}

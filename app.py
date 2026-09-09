@@ -15,6 +15,13 @@ from starlette.middleware.sessions import SessionMiddleware
 from translate import translate_all, LANGS
 from i18n import t, FLAGS, NATIVE_NAME
 
+# Let Pillow open iPhone HEIC/HEIF photos (no-op if lib missing)
+try:
+    from pillow_heif import register_heif_opener
+    register_heif_opener()
+except Exception:
+    pass
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE, "market.db")
 UPLOAD_DIR = os.path.join(BASE, "static", "uploads")
@@ -188,7 +195,14 @@ def product_view(conn, pid: int, lang: str):
 def catalog(request: Request):
     lang = lang_of(request)
     conn = db()
-    ids = conn.execute("SELECT id FROM product WHERE active=1 ORDER BY id DESC").fetchall()
+    # popular first: sort by how many order lines reference each product, then newest
+    ids = conn.execute(
+        """SELECT p.id,
+                  (SELECT COUNT(*) FROM orderline l WHERE l.product_id = p.id) AS demand
+           FROM product p
+           WHERE p.active=1
+           ORDER BY demand DESC, p.id DESC"""
+    ).fetchall()
     items = [product_view(conn, r["id"], lang) for r in ids]
     conn.close()
     return render("catalog.html", ctx(request, items=items))
@@ -364,16 +378,38 @@ def order_status(request: Request, sid: int, status: str = Form(...)):
     return RedirectResponse("/partner", status_code=303)
 
 
+MAX_SIDE = 1600      # px, long edge — plenty for a product photo on mobile
+JPEG_QUALITY = 80
+
+
+def _process_image(raw: bytes) -> bytes:
+    """Downscale to MAX_SIDE and re-encode as JPEG q80. Handles iPhone HEIC.
+    Big phone photos (8-9 MB) come out ~150-300 KB. Returns processed bytes,
+    or the original bytes if it can't be decoded (e.g. not an image)."""
+    from io import BytesIO
+    from PIL import Image, ImageOps
+    try:
+        img = Image.open(BytesIO(raw))
+        img = ImageOps.exif_transpose(img)      # respect phone orientation
+        img = img.convert("RGB")                # flatten alpha/HEIC/PNG -> JPEG
+        img.thumbnail((MAX_SIDE, MAX_SIDE))     # keeps aspect ratio, only shrinks
+        out = BytesIO()
+        img.save(out, format="JPEG", quality=JPEG_QUALITY, optimize=True)
+        return out.getvalue()
+    except Exception:
+        return raw
+
+
 def save_photos(pid: int, files: List[UploadFile]):
     conn = db()
     idx = conn.execute("SELECT COUNT(*) c FROM product_photo WHERE product_id=?", (pid,)).fetchone()["c"]
     for f in files or []:
         if not f or not f.filename:
             continue
-        ext = os.path.splitext(f.filename)[1].lower() or ".jpg"
-        fname = f"{uuid.uuid4().hex}{ext}"
+        data = _process_image(f.file.read())
+        fname = f"{uuid.uuid4().hex}.jpg"       # always JPEG after processing
         with open(os.path.join(UPLOAD_DIR, fname), "wb") as out:
-            out.write(f.file.read())
+            out.write(data)
         conn.execute(
             "INSERT INTO product_photo (product_id, path, is_main, sort) VALUES (?,?,?,?)",
             (pid, f"/static/uploads/{fname}", 1 if idx == 0 else 0, idx),
