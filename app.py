@@ -72,11 +72,14 @@ def check_pw(pw: str, stored: str) -> bool:
 
 
 def tier(qty: int, p1: float, p5: float, p10: float):
-    """Unit price pulled by the quantity the buyer entered: 1 / 5+ / 10+."""
+    """Price fields are LOT TOTALS: p5 = total for 5 pcs, p10 = total for 10 pcs.
+    p1 = price of a single piece. Within a tier the per-piece rate is
+    total/tier-size, so buying exactly 5 costs p5, exactly 10 costs p10,
+    and in-between quantities are charged proportionally at that rate."""
     if qty >= 10:
-        return p10, "10+"
+        return p10 / 10.0, "10+"
     if qty >= 5:
-        return p5, "5+"
+        return p5 / 5.0, "5+"
     return p1, "1"
 
 
@@ -252,6 +255,12 @@ def cart_lines(conn, cart: dict, lang: str):
         total += line_total
         lines.append({**item, "qty": qty, "unit": unit, "tier": tlabel, "line_total": line_total})
     return lines, round(total, 2)
+
+
+@app.post("/cart/clear")
+def cart_clear(request: Request):
+    request.session["cart"] = {}
+    return RedirectResponse("/cart", status_code=303)
 
 
 @app.get("/cart", response_class=HTMLResponse)

@@ -37,12 +37,12 @@ def add_products(partner_id, items):
             )
 
 add_products(colombo, [
-    ("Rice 5kg bag", "White rice, 5kg", 8.00, 7.20, 6.50),
-    ("Cooking oil 1L", "Sunflower oil", 3.50, 3.10, 2.80),
+    ("Rice 5kg bag", "White rice, 5kg", 8.00, 36.00, 65.00),
+    ("Cooking oil 1L", "Sunflower oil", 3.50, 15.50, 28.00),
 ])
 add_products(kandy, [
-    ("Phone charger", "USB-C fast charger", 6.00, 5.00, 4.20),
-    ("Power bank 10000mAh", "Portable battery", 14.00, 12.50, 11.00),
+    ("Phone charger", "USB-C fast charger", 6.00, 25.00, 42.00),
+    ("Power bank 10000mAh", "Portable battery", 14.00, 62.50, 110.00),
 ])
 
 conn.commit()

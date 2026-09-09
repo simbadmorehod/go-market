@@ -13,11 +13,11 @@
   <label>Description</label>
   <textarea name="description" rows="3">{{ p.base_desc if p else '' }}</textarea>
 
-  <label>Price — 1 pc ($)</label>
+  <label>Price per 1 pc ($)</label>
   <input type="number" step="0.01" min="0" name="price_1" value="{{ p.price_1 if p else '' }}" required>
-  <label>Price — 5+ pcs ($)</label>
+  <label>Total price for 5 pcs ($)</label>
   <input type="number" step="0.01" min="0" name="price_5" value="{{ p.price_5 if p else '' }}" required>
-  <label>Price — 10+ pcs ($)</label>
+  <label>Total price for 10 pcs ($)</label>
   <input type="number" step="0.01" min="0" name="price_10" value="{{ p.price_10 if p else '' }}" required>
 
   <label>Photos (first = main, you can add several)</label>

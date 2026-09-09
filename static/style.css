@@ -132,3 +132,7 @@ body {
 .ostatus.skip { background: #fee2e2; color: #991b1b; }
 .sub.st-skip { opacity: .55; }
 .order-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+/* cart controls */
+.clear-cart-form { text-align: right; margin-bottom: 8px; }
+.cl-controls { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
