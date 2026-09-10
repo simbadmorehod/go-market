@@ -1,0 +1,19 @@
+/* ===== country themes (accent + header ornament) ===== */
+:root{ --accent:#111; --accent-2:#888; --on-accent:#fff; --header-pattern:none; }
+body.theme-zh{ --accent:#C1272D; --accent-2:#E6B325; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%23E6B325'%20stroke-width='1.4'%20opacity='0.3'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M4%2034%20q8%20-12%2016%20-4%20q4%204%208%200%20q8%20-8%2016%20-0'/%3E%3Cpath%20d='M8%2020%20q6%206%2012%202'/%3E%3Cpath%20d='M28%2018%20q6%206%2012%202'/%3E%3Ccircle%20cx='12'%20cy='30'%20r='1.6'/%3E%3Ccircle%20cx='36'%20cy='30'%20r='1.6'/%3E%3C/g%3E%3C/svg%3E"); }
+body.theme-th{ --accent:#7A1F2B; --accent-2:#C99A3B; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%23C99A3B'%20stroke-width='1.4'%20opacity='0.28'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M24%206%20C33%2016%2030%2030%2024%2042%20C18%2030%2015%2016%2024%206%20Z'/%3E%3Cpath%20d='M24%2014%20C27%2020%2026%2028%2024%2034%20C22%2028%2021%2020%2024%2014%20Z'/%3E%3Cpath%20d='M2%2042%20q6%20-6%2010%200'/%3E%3Cpath%20d='M36%2042%20q6%20-6%2010%200'/%3E%3C/g%3E%3C/svg%3E"); }
+body.theme-ms{ --accent:#0A3D62; --accent-2:#D4A017; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%23D4A017'%20stroke-width='1.4'%20opacity='0.3'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M24%203%20L45%2024%20L24%2045%20L3%2024%20Z'/%3E%3Cpath%20d='M24%2015%20L33%2024%20L24%2033%20L15%2024%20Z'/%3E%3Cpath%20d='M24%2021%20l3%203%20l-3%203%20l-3%20-3%20Z'/%3E%3Cpath%20d='M0%2024%20L3%2024%20M45%2024%20L48%2024%20M24%200%20L24%203%20M24%2045%20L24%2048'/%3E%3C/g%3E%3C/svg%3E"); }
+body.theme-en{ --accent:#2C3E50; --accent-2:#9aa7b3; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%239aa7b3'%20stroke-width='1.1'%20opacity='0.22'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M24%208%20C30%2014%2030%2020%2024%2024%20C18%2020%2018%2014%2024%208%20Z'/%3E%3Cpath%20d='M24%2040%20C30%2034%2030%2028%2024%2024%20C18%2028%2018%2034%2024%2040%20Z'/%3E%3Cpath%20d='M8%2024%20C14%2018%2020%2018%2024%2024%20C20%2030%2014%2030%208%2024%20Z'/%3E%3Cpath%20d='M40%2024%20C34%2018%2028%2018%2024%2024%20C28%2030%2034%2030%2040%2024%20Z'/%3E%3C/g%3E%3C/svg%3E"); }
+
+/* themed top bar */
+.topbar{ background:var(--accent); color:var(--on-accent); border-bottom:none;
+  background-image:var(--header-pattern); background-repeat:repeat; background-size:48px 48px; }
+.topbar-title{ color:var(--on-accent); }
+.topbar-back, .topbar-lang{ color:var(--on-accent); }
+/* themed primary actions */
+.btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+.cartbar{ background:var(--accent); }
+.card-price{ color:var(--accent); }
+/* flag screen: gentle neutral texture (no country picked yet) */
+.flags-screen{ background:#fff; }
+

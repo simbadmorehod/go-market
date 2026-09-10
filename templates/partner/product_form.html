@@ -21,7 +21,7 @@
   <input type="number" step="0.01" min="0" name="price_10" value="{{ p.price_10 if p else '' }}" required>
 
   <label>Photos (first = main, you can add several)</label>
-  <input type="file" name="photos" accept="image/*" multiple>
+  <input id="photos" type="file" name="photos" accept="image/*" multiple>
 
   {% if photos %}
   <div class="photos">
@@ -38,4 +38,41 @@
   <button class="btn primary big" type="submit">Save</button>
 </form>
 <p class="hint">Translations to 中文 / Melayu / ไทย / English are generated automatically on save.</p>
+
+<script src="/static/vendor/browser-image-compression.js"></script>
+<script>
+(function () {
+  var form = document.querySelector('.pform');
+  var input = document.getElementById('photos');
+  var btn = form.querySelector('button[type="submit"]');
+  var done = false;               // becomes true after compression, lets the real submit through
+
+  form.addEventListener('submit', function (e) {
+    if (done || !input.files || input.files.length === 0) return;  // nothing to compress
+    e.preventDefault();
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Processing photos…';
+
+    var opts = { maxWidthOrHeight: 1600, maxSizeMB: 0.5, useWebWorker: true };
+    var files = Array.prototype.slice.call(input.files);
+
+    Promise.all(files.map(function (f) {
+      return imageCompression(f, opts)
+        .then(function (blob) {
+          var name = (f.name.replace(/\.[^.]+$/, '') || 'photo') + '.jpg';
+          return new File([blob], name, { type: 'image/jpeg' });
+        })
+        .catch(function () { return f; });   // fallback: send original, server compresses
+    })).then(function (compressed) {
+      var dt = new DataTransfer();
+      compressed.forEach(function (f) { dt.items.add(f); });
+      input.files = dt.files;
+      done = true;
+      btn.textContent = 'Uploading…';
+      form.submit();
+    });
+  });
+})();
+</script>
 {% endblock %}

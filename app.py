@@ -115,13 +115,16 @@ def init_db():
             id INTEGER PRIMARY KEY,
             product_id INTEGER NOT NULL REFERENCES product(id) ON DELETE CASCADE,
             path TEXT NOT NULL,
+            thumb TEXT,
             is_main INTEGER DEFAULT 0,
             sort INTEGER DEFAULT 0
         );
         CREATE TABLE IF NOT EXISTS suborder (
             id INTEGER PRIMARY KEY,
             partner_id INTEGER NOT NULL REFERENCES partner(id),
-            contact TEXT NOT NULL,
+            contact TEXT DEFAULT '',
+            selfie TEXT,
+            selfie_thumb TEXT,
             lang TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'new',   -- 'new' | 'deliver' | 'skip'
             created_at TEXT NOT NULL
@@ -136,6 +139,15 @@ def init_db():
         );
         """
     )
+    # migration for DBs created before the thumb column existed
+    cols = [r["name"] for r in conn.execute("PRAGMA table_info(product_photo)")]
+    if "thumb" not in cols:
+        conn.execute("ALTER TABLE product_photo ADD COLUMN thumb TEXT")
+    scols = [r["name"] for r in conn.execute("PRAGMA table_info(suborder)")]
+    if "selfie" not in scols:
+        conn.execute("ALTER TABLE suborder ADD COLUMN selfie TEXT")
+    if "selfie_thumb" not in scols:
+        conn.execute("ALTER TABLE suborder ADD COLUMN selfie_thumb TEXT")
     conn.commit()
     conn.close()
 
@@ -184,13 +196,16 @@ def product_view(conn, pid: int, lang: str):
     name = (tr["name"] if tr and tr["name"] else None) or p["base_name"]
     desc = (tr["description"] if tr and tr["description"] else None) or p["base_desc"]
     photos = conn.execute(
-        "SELECT path FROM product_photo WHERE product_id=? ORDER BY is_main DESC, sort", (pid,)
+        "SELECT path, thumb FROM product_photo WHERE product_id=? ORDER BY is_main DESC, sort", (pid,)
     ).fetchall()
+    main_thumb = None
+    if photos:
+        main_thumb = photos[0]["thumb"] or photos[0]["path"]   # fall back to full if no thumb
     return {
         "id": p["id"], "name": name, "desc": desc,
         "price_1": p["price_1"], "price_5": p["price_5"], "price_10": p["price_10"],
-        "main": photos[0]["path"] if photos else None,
-        "photos": [ph["path"] for ph in photos],
+        "main": main_thumb,                        # catalog card uses the small thumb
+        "photos": [ph["path"] for ph in photos],   # product page uses full images
     }
 
 
@@ -271,12 +286,29 @@ def cart_page(request: Request):
     return render("cart.html", ctx(request, lines=lines, total=total))
 
 
+def save_selfie(raw: bytes):
+    """Save a buyer selfie as full + thumb JPEG. Returns (path, thumb_path)."""
+    full = _encode(raw, MAX_SIDE)
+    thumb = _encode(raw, THUMB_SIDE)
+    base = uuid.uuid4().hex
+    with open(os.path.join(UPLOAD_DIR, f"{base}.jpg"), "wb") as out:
+        out.write(full)
+    with open(os.path.join(UPLOAD_DIR, f"{base}_t.jpg"), "wb") as out:
+        out.write(thumb)
+    return f"/static/uploads/{base}.jpg", f"/static/uploads/{base}_t.jpg"
+
+
 @app.post("/checkout")
-def checkout(request: Request, contact: str = Form(...)):
-    contact = contact.strip()
+async def checkout(request: Request, contact: str = Form(""), selfie: UploadFile = File(None)):
+    contact = (contact or "").strip()
+    has_selfie = selfie is not None and getattr(selfie, "filename", "")
     cart = request.session.get("cart", {})
-    if not contact or not cart:
+    # need a cart and at least one way to identify the buyer (text OR selfie)
+    if not cart or not (contact or has_selfie):
         return RedirectResponse("/cart", status_code=303)
+    selfie_path = selfie_thumb = None
+    if has_selfie:
+        selfie_path, selfie_thumb = save_selfie(selfie.file.read())
     lang = lang_of(request)
     conn = db()
     # one sub-order per supplier: each supplier gets the lines for their own cards
@@ -288,8 +320,9 @@ def checkout(request: Request, contact: str = Form(...)):
         by_partner.setdefault(p["partner_id"], []).append((p, qty))
     for partner_id, rows in by_partner.items():
         cur = conn.execute(
-            "INSERT INTO suborder (partner_id, contact, lang, status, created_at) VALUES (?,?,?,'new',?)",
-            (partner_id, contact, lang, now()),
+            "INSERT INTO suborder (partner_id, contact, selfie, selfie_thumb, lang, status, created_at) "
+            "VALUES (?,?,?,?,?,'new',?)",
+            (partner_id, contact, selfie_path, selfie_thumb, lang, now()),
         )
         sid = cur.lastrowid
         for p, qty in rows:
@@ -355,6 +388,7 @@ def partner_home(request: Request):
         total = sum(l["qty"] * l["unit_price"] for l in lines)
         orders.append({"id": s["id"], "contact": s["contact"], "lang": s["lang"],
                        "status": s["status"], "created_at": s["created_at"],
+                       "selfie": s["selfie"], "selfie_thumb": s["selfie_thumb"],
                        "lines": lines, "total": round(total, 2)})
 
     # "to deliver" totals per product: only orders the supplier chose to deliver
@@ -387,21 +421,21 @@ def order_status(request: Request, sid: int, status: str = Form(...)):
     return RedirectResponse("/partner", status_code=303)
 
 
-MAX_SIDE = 1600      # px, long edge — plenty for a product photo on mobile
+MAX_SIDE = 1600      # px, long edge — full product photo
+THUMB_SIDE = 400     # px, long edge — catalog card thumbnail
 JPEG_QUALITY = 80
 
 
-def _process_image(raw: bytes) -> bytes:
-    """Downscale to MAX_SIDE and re-encode as JPEG q80. Handles iPhone HEIC.
-    Big phone photos (8-9 MB) come out ~150-300 KB. Returns processed bytes,
-    or the original bytes if it can't be decoded (e.g. not an image)."""
+def _encode(raw: bytes, max_side: int) -> bytes:
+    """Downscale to max_side and re-encode as JPEG. Handles iPhone HEIC and
+    EXIF orientation. Returns processed bytes, or the original if undecodable."""
     from io import BytesIO
     from PIL import Image, ImageOps
     try:
         img = Image.open(BytesIO(raw))
         img = ImageOps.exif_transpose(img)      # respect phone orientation
         img = img.convert("RGB")                # flatten alpha/HEIC/PNG -> JPEG
-        img.thumbnail((MAX_SIDE, MAX_SIDE))     # keeps aspect ratio, only shrinks
+        img.thumbnail((max_side, max_side))     # keeps aspect ratio, only shrinks
         out = BytesIO()
         img.save(out, format="JPEG", quality=JPEG_QUALITY, optimize=True)
         return out.getvalue()
@@ -415,13 +449,18 @@ def save_photos(pid: int, files: List[UploadFile]):
     for f in files or []:
         if not f or not f.filename:
             continue
-        data = _process_image(f.file.read())
-        fname = f"{uuid.uuid4().hex}.jpg"       # always JPEG after processing
-        with open(os.path.join(UPLOAD_DIR, fname), "wb") as out:
-            out.write(data)
+        raw = f.file.read()
+        full = _encode(raw, MAX_SIDE)
+        thumb = _encode(raw, THUMB_SIDE)
+        base = uuid.uuid4().hex
+        with open(os.path.join(UPLOAD_DIR, f"{base}.jpg"), "wb") as out:
+            out.write(full)
+        with open(os.path.join(UPLOAD_DIR, f"{base}_t.jpg"), "wb") as out:
+            out.write(thumb)
         conn.execute(
-            "INSERT INTO product_photo (product_id, path, is_main, sort) VALUES (?,?,?,?)",
-            (pid, f"/static/uploads/{fname}", 1 if idx == 0 else 0, idx),
+            "INSERT INTO product_photo (product_id, path, thumb, is_main, sort) VALUES (?,?,?,?,?)",
+            (pid, f"/static/uploads/{base}.jpg", f"/static/uploads/{base}_t.jpg",
+             1 if idx == 0 else 0, idx),
         )
         idx += 1
     conn.commit()

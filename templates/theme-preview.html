@@ -1,0 +1,84 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theme preview</title>
+<style>
+/* ===== country themes (accent + header ornament) ===== */
+:root{ --accent:#111; --accent-2:#888; --on-accent:#fff; --header-pattern:none; }
+body.theme-zh{ --accent:#C1272D; --accent-2:#E6B325; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%23E6B325'%20stroke-width='1.4'%20opacity='0.3'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M4%2034%20q8%20-12%2016%20-4%20q4%204%208%200%20q8%20-8%2016%20-0'/%3E%3Cpath%20d='M8%2020%20q6%206%2012%202'/%3E%3Cpath%20d='M28%2018%20q6%206%2012%202'/%3E%3Ccircle%20cx='12'%20cy='30'%20r='1.6'/%3E%3Ccircle%20cx='36'%20cy='30'%20r='1.6'/%3E%3C/g%3E%3C/svg%3E"); }
+body.theme-th{ --accent:#7A1F2B; --accent-2:#C99A3B; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%23C99A3B'%20stroke-width='1.4'%20opacity='0.28'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M24%206%20C33%2016%2030%2030%2024%2042%20C18%2030%2015%2016%2024%206%20Z'/%3E%3Cpath%20d='M24%2014%20C27%2020%2026%2028%2024%2034%20C22%2028%2021%2020%2024%2014%20Z'/%3E%3Cpath%20d='M2%2042%20q6%20-6%2010%200'/%3E%3Cpath%20d='M36%2042%20q6%20-6%2010%200'/%3E%3C/g%3E%3C/svg%3E"); }
+body.theme-ms{ --accent:#0A3D62; --accent-2:#D4A017; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%23D4A017'%20stroke-width='1.4'%20opacity='0.3'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M24%203%20L45%2024%20L24%2045%20L3%2024%20Z'/%3E%3Cpath%20d='M24%2015%20L33%2024%20L24%2033%20L15%2024%20Z'/%3E%3Cpath%20d='M24%2021%20l3%203%20l-3%203%20l-3%20-3%20Z'/%3E%3Cpath%20d='M0%2024%20L3%2024%20M45%2024%20L48%2024%20M24%200%20L24%203%20M24%2045%20L24%2048'/%3E%3C/g%3E%3C/svg%3E"); }
+body.theme-en{ --accent:#2C3E50; --accent-2:#9aa7b3; --on-accent:#fff; --header-pattern:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='48'%20viewBox='0%200%2048%2048'%3E%3Cg%20fill='none'%20stroke='%239aa7b3'%20stroke-width='1.1'%20opacity='0.22'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M24%208%20C30%2014%2030%2020%2024%2024%20C18%2020%2018%2014%2024%208%20Z'/%3E%3Cpath%20d='M24%2040%20C30%2034%2030%2028%2024%2024%20C18%2028%2018%2034%2024%2040%20Z'/%3E%3Cpath%20d='M8%2024%20C14%2018%2020%2018%2024%2024%20C20%2030%2014%2030%208%2024%20Z'/%3E%3Cpath%20d='M40%2024%20C34%2018%2028%2018%2024%2024%20C28%2030%2034%2030%2040%2024%20Z'/%3E%3C/g%3E%3C/svg%3E"); }
+
+/* themed top bar */
+.topbar{ background:var(--accent); color:var(--on-accent); border-bottom:none;
+  background-image:var(--header-pattern); background-repeat:repeat; background-size:48px 48px; }
+.topbar-title{ color:var(--on-accent); }
+.topbar-back, .topbar-lang{ color:var(--on-accent); }
+/* themed primary actions */
+.btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+.cartbar{ background:var(--accent); }
+.card-price{ color:var(--accent); }
+/* flag screen: gentle neutral texture (no country picked yet) */
+.flags-screen{ background:#fff; }
+
+
+body{font-family:-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Thai","Noto Sans SC",sans-serif;background:#eceef0;margin:0;padding:20px;}
+h2{font:600 14px/1 sans-serif;color:#555;margin:26px 0 8px;text-transform:uppercase;letter-spacing:.04em;}
+.phone{max-width:420px;margin:0 auto 8px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.08);}
+.topbar{position:static;height:52px;display:flex;align-items:center;padding:12px;font-weight:600;font-size:17px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;}
+.card{background:#fff;border:1px solid #ececec;border-radius:12px;overflow:hidden;}
+.card-img{aspect-ratio:1/1;background:#f4f4f4;display:flex;align-items:center;justify-content:center;color:#c8c8c8;font-size:12px;}
+.card-body{padding:8px 10px 10px;}
+.card-name{font-size:14px;font-weight:500;}
+.card-price{font-size:15px;font-weight:700;margin-top:4px;}
+.btn{display:block;text-align:center;margin:0 12px 12px;padding:14px;border-radius:12px;font-weight:600;color:var(--on-accent);}
+.cartbar{margin:0 12px 14px;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:14px;color:#fff;font-weight:600;}
+.cartbar b{background:#fff;color:#111;border-radius:20px;padding:2px 10px;}
+.lbl{max-width:420px;margin:0 auto;font:600 13px sans-serif;color:#333;}
+</style></head><body>
+
+<h2>🇨🇳 中文 (China) — красный + золото, облачный узор</h2>
+<div class="phone theme-zh">
+  <div class="topbar">Catalog</div>
+  <div class="grid">
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Island coffee</div><div class="card-price">$2.00</div></div></div>
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Golden coffee</div><div class="card-price">$0.50</div></div></div>
+  </div>
+  <div class="btn">Place order</div>
+  <div class="cartbar theme-zh"><span>🛒 Cart</span><b>3</b></div>
+</div>
+
+<h2>🇹🇭 ไทย (Thailand) — бордо + золото, пламя кранок</h2>
+<div class="phone theme-th">
+  <div class="topbar">Catalog</div>
+  <div class="grid">
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Island coffee</div><div class="card-price">$2.00</div></div></div>
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Golden coffee</div><div class="card-price">$0.50</div></div></div>
+  </div>
+  <div class="btn">Place order</div>
+  <div class="cartbar theme-th"><span>🛒 Cart</span><b>3</b></div>
+</div>
+
+<h2>🇲🇾 Melayu (Malaysia) — синий + золото, ромбы сонгкет</h2>
+<div class="phone theme-ms">
+  <div class="topbar">Catalog</div>
+  <div class="grid">
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Island coffee</div><div class="card-price">$2.00</div></div></div>
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Golden coffee</div><div class="card-price">$0.50</div></div></div>
+  </div>
+  <div class="btn">Place order</div>
+  <div class="cartbar theme-ms"><span>🛒 Cart</span><b>3</b></div>
+</div>
+
+<h2>🇬🇧 English — сине-серый, тихий дамаск</h2>
+<div class="phone theme-en">
+  <div class="topbar">Catalog</div>
+  <div class="grid">
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Island coffee</div><div class="card-price">$2.00</div></div></div>
+    <div class="card"><div class="card-img">photo</div><div class="card-body"><div class="card-name">Golden coffee</div><div class="card-price">$0.50</div></div></div>
+  </div>
+  <div class="btn">Place order</div>
+  <div class="cartbar theme-en"><span>🛒 Cart</span><b>3</b></div>
+</div>
+</body></html>

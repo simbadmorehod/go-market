@@ -13,7 +13,10 @@
 {% for o in orders %}
 <div class="sub st-{{ o.status }}">
   <div class="sub-head">
-    <span>#{{ o.id }} · {{ o.contact }} <span class="tag">{{ o.lang }}</span></span>
+    <span class="sub-who">
+      {% if o.selfie_thumb %}<a href="{{ o.selfie }}" target="_blank"><img class="selfie-thumb" src="{{ o.selfie_thumb }}" alt="selfie" loading="lazy"></a>{% endif %}
+      #{{ o.id }}{% if o.contact %} · {{ o.contact }}{% endif %} <span class="tag">{{ o.lang }}</span>
+    </span>
     <span class="ostatus {{ o.status }}">
       {% if o.status == 'deliver' %}✓ deliver{% elif o.status == 'skip' %}✕ skip{% else %}new{% endif %}
     </span>

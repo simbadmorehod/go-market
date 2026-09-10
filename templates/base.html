@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>{% block title %}Market{% endblock %}</title>
 <link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/themes.css">
 </head>
-<body>
+<body class="theme-{{ lang }}">
 <div class="app">
   {% block header %}{% endblock %}
   <main class="content">{% block content %}{% endblock %}</main>

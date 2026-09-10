@@ -8,7 +8,7 @@
 {% block content %}
 <div class="gallery">
   {% if p.photos %}
-    {% for ph in p.photos %}<img src="{{ ph }}" alt="">{% endfor %}
+    {% for ph in p.photos %}<img src="{{ ph }}" alt="" loading="{{ 'eager' if loop.first else 'lazy' }}">{% endfor %}
   {% else %}<div class="noimg big">—</div>{% endif %}
 </div>
 <h1 class="p-name">{{ p.name }}</h1>

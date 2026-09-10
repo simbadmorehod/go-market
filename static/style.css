@@ -138,3 +138,14 @@ body {
 .cl-controls { display: flex; gap: 8px; align-items: center; }
 .cl-controls form { display: flex; gap: 8px; align-items: center; margin: 0; }
 .cl-controls .btn { white-space: nowrap; }
+
+/* selfie checkout */
+.selfie-btn { display: inline-flex; align-items: center; gap: 6px; padding: 12px 16px;
+  border: 1px dashed #bbb; border-radius: 10px; cursor: pointer; margin: 4px 0 12px;
+  font-size: 15px; color: #333; background: #fafafa; }
+.selfie-preview { display: block; width: 96px; height: 96px; object-fit: cover;
+  border-radius: 10px; margin-bottom: 12px; border: 1px solid #e6e6e6; }
+
+/* selfie in partner order */
+.sub-who { display: inline-flex; align-items: center; gap: 8px; }
+.selfie-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid #e6e6e6; }

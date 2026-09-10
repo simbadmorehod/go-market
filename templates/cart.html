@@ -14,7 +14,7 @@
 </form>
 {% for l in lines %}
 <div class="cartline">
-  <div class="cl-img">{% if l.main %}<img src="{{ l.main }}">{% else %}<div class="noimg">—</div>{% endif %}</div>
+  <div class="cl-img">{% if l.main %}<img src="{{ l.main }}" loading="lazy">{% else %}<div class="noimg">—</div>{% endif %}</div>
   <div class="cl-body">
     <div class="cl-name">{{ l.name }}</div>
     <div class="cl-price">${{ '%.2f'|format(l.unit) }} / {{ t('unit') }} ({{ l.tier }})</div>
@@ -35,10 +35,61 @@
 </div>
 {% endfor %}
 <div class="grand">{{ t('grand_total') }}: <b>${{ '%.2f'|format(total) }}</b></div>
-<form class="checkout" method="post" action="/checkout">
-  <label>{{ t('contact_label') }}</label>
-  <input class="contact" type="text" name="contact" placeholder="{{ t('contact_ph') }}" required>
+
+<form class="checkout" method="post" action="/checkout" enctype="multipart/form-data">
+  <label>{{ t('contact_or_selfie') }}</label>
+  <input class="contact" type="text" name="contact" placeholder="{{ t('contact_ph') }}">
+
+  <label class="selfie-btn" for="selfie">📷 {{ t('take_selfie') }}</label>
+  <input id="selfie" type="file" name="selfie" accept="image/*" capture="user" hidden>
+  <img id="selfie-preview" class="selfie-preview" alt="" hidden>
+
   <button class="btn primary big" type="submit">{{ t('checkout') }}</button>
 </form>
+{% endif %}
+{% endblock %}
+
+{% block bottom %}
+{% if lines %}
+<script src="/static/vendor/browser-image-compression.js"></script>
+<script>
+(function () {
+  var form = document.querySelector('.checkout');
+  var contact = form.querySelector('input[name="contact"]');
+  var selfie = document.getElementById('selfie');
+  var preview = document.getElementById('selfie-preview');
+  var btn = form.querySelector('button[type="submit"]');
+  var done = false;
+
+  // show a preview once a selfie is taken/picked
+  selfie.addEventListener('change', function () {
+    if (selfie.files && selfie.files[0]) {
+      preview.src = URL.createObjectURL(selfie.files[0]);
+      preview.hidden = false;
+    }
+  });
+
+  form.addEventListener('submit', function (e) {
+    // require text OR selfie
+    if (!done && !contact.value.trim() && !(selfie.files && selfie.files.length)) {
+      e.preventDefault();
+      alert('{{ t('contact_or_selfie') }}');
+      return;
+    }
+    // compress selfie in-browser before upload
+    if (done || !(selfie.files && selfie.files.length)) return;
+    e.preventDefault();
+    btn.disabled = true; btn.textContent = '...';
+    imageCompression(selfie.files[0], { maxWidthOrHeight: 1600, maxSizeMB: 0.5, useWebWorker: true })
+      .then(function (blob) {
+        var dt = new DataTransfer();
+        dt.items.add(new File([blob], 'selfie.jpg', { type: 'image/jpeg' }));
+        selfie.files = dt.files;
+      })
+      .catch(function () {})
+      .then(function () { done = true; form.submit(); });
+  });
+})();
+</script>
 {% endif %}
 {% endblock %}
